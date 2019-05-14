@@ -225,13 +225,12 @@ class _WhatsNewState extends State<WhatsNew> {
                   color: Colors.grey,
                   size: 18,
                 ),
-                SizedBox( width: 4, ),
+                SizedBox(
+                  width: 4,
+                ),
                 Text(
                   '15 Min',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 14
-                  ),
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
                 ),
               ],
             ),
