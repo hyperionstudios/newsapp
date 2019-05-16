@@ -4,6 +4,7 @@ import 'package:news_app/screens/home_screen.dart';
 import 'package:news_app/screens/headline_news.dart';
 import 'package:news_app/screens/twitter_feed.dart';
 import 'package:news_app/screens/instagram_feed.dart';
+import 'package:news_app/screens/facebook_feeds.dart';
 
 class NavigationDrawer extends StatefulWidget {
   @override
@@ -16,6 +17,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
     NavMenuItem("Headline News", () => HeadLineNews()),
     NavMenuItem( "Twitter Feeds" , () => TwitterFeed() ),
     NavMenuItem("Instagram Feeds", () => InstagramFeed() ),
+    NavMenuItem("Facebook Feeds", () => FacebookFeeds() ),
   ];
 
   @override
