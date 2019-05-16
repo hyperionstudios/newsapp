@@ -9,8 +9,10 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin  {
+enum PopOutMenu { HELP, ABOUT, CONTACT, SETTINGS }
 
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   @override
@@ -33,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         centerTitle: false,
         actions: <Widget>[
           IconButton(icon: Icon(Icons.search), onPressed: () {}),
-          IconButton(icon: Icon(Icons.more_vert), onPressed: () {}),
+          _popOutMenu(context),
         ],
         bottom: TabBar(
           indicatorColor: Colors.white,
@@ -53,12 +55,40 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ),
       drawer: NavigationDrawer(),
       body: Center(
-        child: TabBarView( children: [
-          WhatsNew(),
-          Popular(),
-          Favourites()
-        ] , controller: _tabController,  ),
+        child: TabBarView(
+          children: [WhatsNew(), Popular(), Favourites()],
+          controller: _tabController,
+        ),
       ),
+    );
+  }
+
+  Widget _popOutMenu(BuildContext context) {
+    return PopupMenuButton<PopOutMenu>(
+      itemBuilder: (context) {
+        return [
+          PopupMenuItem<PopOutMenu>(
+            value: PopOutMenu.ABOUT,
+            child: Text('ABOUT'),
+          ),
+          PopupMenuItem<PopOutMenu>(
+            value: PopOutMenu.CONTACT,
+            child: Text('CONTACT'),
+          ),
+          PopupMenuItem<PopOutMenu>(
+            value: PopOutMenu.HELP,
+            child: Text('HELP'),
+          ),
+          PopupMenuItem<PopOutMenu>(
+            value: PopOutMenu.SETTINGS,
+            child: Text('SETTINGS'),
+          ),
+        ];
+      },
+      onSelected: (PopOutMenu menu) {
+        // TODO :
+      },
+      icon: Icon(Icons.more_vert),
     );
   }
 }
