@@ -11,7 +11,7 @@ class _TwitterFeedState extends State<TwitterFeed> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Twitter Feed"),
+        title: Text("Twitter Feeds"),
         centerTitle: false,
         actions: <Widget>[
           IconButton(icon: Icon(Icons.search), onPressed: () {}),
