@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   page_view_indicator: ^2.0.0
   shared_preferences: ^0.5.2
+  http: ^0.12.0+2
 
 dev_dependencies:
   flutter_test:

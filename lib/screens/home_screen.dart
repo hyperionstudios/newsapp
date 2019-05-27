@@ -3,6 +3,7 @@ import 'package:news_app/shared_ui/navigation_drawer.dart';
 import 'home_tabs/whats_new.dart';
 import 'home_tabs/popular.dart';
 import 'home_tabs/favourites.dart';
+import 'package:news_app/api/authors_api.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,6 +15,8 @@ enum PopOutMenu { HELP, ABOUT, CONTACT, SETTINGS }
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   TabController _tabController;
+
+  AuthorsAPI authorsAPI = AuthorsAPI();
 
   @override
   void initState() {
@@ -29,6 +32,9 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+
+    authorsAPI.fetchAllAuthors();
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Explore"),
