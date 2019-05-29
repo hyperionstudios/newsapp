@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/api/posts_api.dart';
+import 'dart:async';
+import 'package:timeago/timeago.dart' as timeago;
+
+
+import 'package:news_app/models/post.dart';
 
 class WhatsNew extends StatefulWidget {
   @override
@@ -6,6 +12,9 @@ class WhatsNew extends StatefulWidget {
 }
 
 class _WhatsNewState extends State<WhatsNew> {
+
+  PostsAPI postsAPI = PostsAPI();
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -14,6 +23,7 @@ class _WhatsNewState extends State<WhatsNew> {
         children: <Widget>[
           _drawHeader(),
           _drawTopStories(),
+          _drawRecentUpdates(),
         ],
       ),
     );
@@ -78,33 +88,44 @@ class _WhatsNewState extends State<WhatsNew> {
           Padding(
             padding: EdgeInsets.all(8.0),
             child: Card(
-              child: Column(
-                children: <Widget>[
-                  _drawSingleRow(),
-                  _drawDivider(),
-                  _drawSingleRow(),
-                  _drawDivider(),
-                  _drawSingleRow(),
-                ],
+              child: FutureBuilder(
+                future: postsAPI.fetchWhatsNew(),
+                builder: ( context, AsyncSnapshot snapShot ){
+                  Post post1 = snapShot.data[0];
+                  Post post2 = snapShot.data[1];
+                  Post post3 = snapShot.data[2];
+                  return Column(
+                    children: <Widget>[
+                      _drawSingleRow( post1 ),
+                      _drawDivider(),
+                      _drawSingleRow( post2 ),
+                      _drawDivider(),
+                      _drawSingleRow( post3 ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _drawRecentUpdates(){
+    return Padding(
+      padding: EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
           Padding(
-            padding: EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
-                  child: _drawSectionTitle('Recent Updates'),
-                ),
-                _drawRecentUpdatesCard(Colors.deepOrange),
-                _drawRecentUpdatesCard(Colors.teal),
-                SizedBox(
-                  height: 48,
-                ),
-              ],
-            ),
+            padding: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
+            child: _drawSectionTitle('Recent Updates'),
+          ),
+          _drawRecentUpdatesCard(Colors.deepOrange),
+          _drawRecentUpdatesCard(Colors.teal),
+          SizedBox(
+            height: 48,
           ),
         ],
       ),
@@ -119,17 +140,14 @@ class _WhatsNewState extends State<WhatsNew> {
     );
   }
 
-  Widget _drawSingleRow() {
+  Widget _drawSingleRow( Post post ) {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           SizedBox(
-            child: Image(
-              image: ExactAssetImage('assets/images/placeholder_bg.png'),
-              fit: BoxFit.cover,
-            ),
+            child: Image.network(post.featuredImage,fit: BoxFit.cover ,),
             width: 124,
             height: 124,
           ),
@@ -140,7 +158,7 @@ class _WhatsNewState extends State<WhatsNew> {
             child: Column(
               children: <Widget>[
                 Text(
-                  'The World Global Warming Annual Summit',
+                  post.title,
                   maxLines: 2,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
@@ -154,7 +172,7 @@ class _WhatsNewState extends State<WhatsNew> {
                     Row(
                       children: <Widget>[
                         Icon(Icons.timer),
-                        Text('15 min'),
+                        Text( _parseHumanDateTime( post.dateWritten ) ),
                       ],
                     ),
                   ],
@@ -165,6 +183,12 @@ class _WhatsNewState extends State<WhatsNew> {
         ],
       ),
     );
+  }
+
+  String _parseHumanDateTime( String dateTime ){
+    Duration timeAgo = DateTime.now().difference( DateTime.parse(dateTime) );
+    DateTime theDifference = DateTime.now().subtract( timeAgo );
+    return timeago.format( theDifference );
   }
 
   Widget _drawSectionTitle(String title) {
