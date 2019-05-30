@@ -3,7 +3,6 @@ import 'package:news_app/api/posts_api.dart';
 import 'dart:async';
 import 'package:timeago/timeago.dart' as timeago;
 
-
 import 'package:news_app/models/post.dart';
 
 class WhatsNew extends StatefulWidget {
@@ -12,7 +11,6 @@ class WhatsNew extends StatefulWidget {
 }
 
 class _WhatsNewState extends State<WhatsNew> {
-
   PostsAPI postsAPI = PostsAPI();
 
   @override
@@ -90,19 +88,45 @@ class _WhatsNewState extends State<WhatsNew> {
             child: Card(
               child: FutureBuilder(
                 future: postsAPI.fetchWhatsNew(),
-                builder: ( context, AsyncSnapshot snapShot ){
-                  Post post1 = snapShot.data[0];
-                  Post post2 = snapShot.data[1];
-                  Post post3 = snapShot.data[2];
-                  return Column(
-                    children: <Widget>[
-                      _drawSingleRow( post1 ),
-                      _drawDivider(),
-                      _drawSingleRow( post2 ),
-                      _drawDivider(),
-                      _drawSingleRow( post3 ),
-                    ],
-                  );
+                builder: (context, AsyncSnapshot snapShot) {
+                  switch (snapShot.connectionState) {
+                    case ConnectionState.waiting:
+                      return _loading();
+                      break;
+                    case ConnectionState.active:
+                      return _loading();
+                      break;
+                    case ConnectionState.none:
+                      return _connectionError();
+                      break;
+                    case ConnectionState.done:
+                      if (snapShot.error != null) {
+                        return _error( snapShot.error );
+                      } else {
+                        if (snapShot.hasData) {
+                          List<Post> posts = snapShot.data;
+                          if (posts.length >= 3) {
+                            Post post1 = snapShot.data[0];
+                            Post post2 = snapShot.data[1];
+                            Post post3 = snapShot.data[2];
+                            return Column(
+                              children: <Widget>[
+                                _drawSingleRow(post1),
+                                _drawDivider(),
+                                _drawSingleRow(post2),
+                                _drawDivider(),
+                                _drawSingleRow(post3),
+                              ],
+                            );
+                          }else{
+                            return _noData();
+                          }
+                        } else {
+                          return _noData();
+                        }
+                      }
+                      break;
+                  }
                 },
               ),
             ),
@@ -112,7 +136,7 @@ class _WhatsNewState extends State<WhatsNew> {
     );
   }
 
-  Widget _drawRecentUpdates(){
+  Widget _drawRecentUpdates() {
     return Padding(
       padding: EdgeInsets.all(8),
       child: Column(
@@ -140,14 +164,17 @@ class _WhatsNewState extends State<WhatsNew> {
     );
   }
 
-  Widget _drawSingleRow( Post post ) {
+  Widget _drawSingleRow(Post post) {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           SizedBox(
-            child: Image.network(post.featuredImage,fit: BoxFit.cover ,),
+            child: Image.network(
+              post.featuredImage,
+              fit: BoxFit.cover,
+            ),
             width: 124,
             height: 124,
           ),
@@ -172,7 +199,7 @@ class _WhatsNewState extends State<WhatsNew> {
                     Row(
                       children: <Widget>[
                         Icon(Icons.timer),
-                        Text( _parseHumanDateTime( post.dateWritten ) ),
+                        Text(_parseHumanDateTime(post.dateWritten)),
                       ],
                     ),
                   ],
@@ -185,10 +212,10 @@ class _WhatsNewState extends State<WhatsNew> {
     );
   }
 
-  String _parseHumanDateTime( String dateTime ){
-    Duration timeAgo = DateTime.now().difference( DateTime.parse(dateTime) );
-    DateTime theDifference = DateTime.now().subtract( timeAgo );
-    return timeago.format( theDifference );
+  String _parseHumanDateTime(String dateTime) {
+    Duration timeAgo = DateTime.now().difference(DateTime.parse(dateTime));
+    DateTime theDifference = DateTime.now().subtract(timeAgo);
+    return timeago.format(theDifference);
   }
 
   Widget _drawSectionTitle(String title) {
@@ -263,4 +290,34 @@ class _WhatsNewState extends State<WhatsNew> {
       ),
     );
   }
+
+  Widget _loading() {
+    return Container(
+      padding: EdgeInsets.only(top: 16, bottom: 16),
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+
+Widget _connectionError() {
+  return Container(
+    padding: EdgeInsets.all(16),
+    child: Text('Connection Error!!!!'),
+  );
+}
+
+Widget _error(var error) {
+  return Container(
+    padding: EdgeInsets.all(16),
+    child: Text(error.toString()),
+  );
+}
+
+Widget _noData() {
+  return Container(
+    padding: EdgeInsets.all(16),
+    child: Text('No Data Available!'),
+  );
 }

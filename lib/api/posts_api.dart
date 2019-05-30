@@ -33,6 +33,7 @@ class PostsAPI {
     }
 
     return posts;
+
   }
 
 }
