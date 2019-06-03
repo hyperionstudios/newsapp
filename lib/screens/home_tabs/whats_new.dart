@@ -8,6 +8,8 @@ import 'package:news_app/utilities/data_utilities.dart';
 
 import 'package:news_app/models/post.dart';
 
+import '../single_post.dart';
+
 class WhatsNew extends StatefulWidget {
   @override
   _WhatsNewState createState() => _WhatsNewState();
@@ -59,39 +61,46 @@ class _WhatsNewState extends State<WhatsNew> {
               Random random = Random();
               int randomIndex = random.nextInt( posts.length );
               Post post = posts[randomIndex];
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * 0.25,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(post.featuredImage),
-                    fit: BoxFit.cover,
+              return GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: ( context ){
+                    return SinglePost( post );
+                  }) );
+                } ,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.25,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(post.featuredImage),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(left: 48, right: 48),
-                        child: Text(
-                          post.title,
-                          style: _headerTitle,
-                          textAlign: TextAlign.center,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(left: 48, right: 48),
+                          child: Text(
+                            post.title,
+                            style: _headerTitle,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 34, right: 34),
-                        child: Text(
-                          post.content.substring( 0 , 75 ),
-                          style: _headerDescription,
-                          textAlign: TextAlign.center,
+                        SizedBox(
+                          height: 8,
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(left: 34, right: 34),
+                          child: Text(
+                            post.content.substring( 0 , 75 ),
+                            style: _headerDescription,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
@@ -217,49 +226,56 @@ class _WhatsNewState extends State<WhatsNew> {
   }
 
   Widget _drawSingleRow(Post post) {
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          SizedBox(
-            child: Image.network(
-              post.featuredImage,
-              fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: (){
+        Navigator.push( context, MaterialPageRoute(builder: ( context ){
+          return SinglePost( post );
+        }));
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            SizedBox(
+              child: Image.network(
+                post.featuredImage,
+                fit: BoxFit.cover,
+              ),
+              width: 124,
+              height: 124,
             ),
-            width: 124,
-            height: 124,
-          ),
-          SizedBox(
-            width: 16,
-          ),
-          Expanded(
-            child: Column(
-              children: <Widget>[
-                Text(
-                  post.title,
-                  maxLines: 2,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(
-                  height: 18,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Michael Adams'),
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.timer),
-                        Text(parseHumanDateTime(post.dateWritten)),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+            SizedBox(
+              width: 16,
             ),
-          ),
-        ],
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    post.title,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                  SizedBox(
+                    height: 18,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('Michael Adams'),
+                      Row(
+                        children: <Widget>[
+                          Icon(Icons.timer),
+                          Text(parseHumanDateTime(post.dateWritten)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -276,63 +292,70 @@ class _WhatsNewState extends State<WhatsNew> {
 
   Widget _drawRecentUpdatesCard(Color color , Post post) {
     return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage( post.featuredImage ),
-                fit: BoxFit.cover,
-              ),
-            ),
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.25,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 16, left: 16),
-            child: Container(
-              padding: EdgeInsets.only(left: 24, right: 24, top: 2, bottom: 2),
+      child: GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: ( context   ){
+            return SinglePost(post);
+          }));
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
               decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(4),
+                image: DecorationImage(
+                  image: NetworkImage( post.featuredImage ),
+                  fit: BoxFit.cover,
+                ),
               ),
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height * 0.25,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16, left: 16),
+              child: Container(
+                padding: EdgeInsets.only(left: 24, right: 24, top: 2, bottom: 2),
+                decoration: BoxDecoration(
+                  color: color,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  'SPORT',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
               child: Text(
-                'SPORT',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+                post.title,
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
               ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
-            child: Text(
-              post.title,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            Padding(
+              padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
+              child: Row(
+                children: <Widget>[
+                  Icon(
+                    Icons.timer,
+                    color: Colors.grey,
+                    size: 18,
+                  ),
+                  SizedBox(
+                    width: 4,
+                  ),
+                  Text(
+                    parseHumanDateTime( post.dateWritten ),
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 16),
-            child: Row(
-              children: <Widget>[
-                Icon(
-                  Icons.timer,
-                  color: Colors.grey,
-                  size: 18,
-                ),
-                SizedBox(
-                  width: 4,
-                ),
-                Text(
-                  parseHumanDateTime( post.dateWritten ),
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -3,6 +3,10 @@ import 'package:news_app/shared_ui/navigation_drawer.dart';
 import 'home_tabs/whats_new.dart';
 import 'home_tabs/popular.dart';
 import 'home_tabs/favourites.dart';
+import 'pages/about.dart';
+import 'pages/contact.dart';
+import 'pages/settings.dart';
+import 'pages/help.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -86,7 +90,28 @@ class _HomeScreenState extends State<HomeScreen>
         ];
       },
       onSelected: (PopOutMenu menu) {
-        // TODO :
+        switch( menu ){
+          case PopOutMenu.ABOUT :
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return AboutUs();
+            }));
+            break;
+          case PopOutMenu.SETTINGS:
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return Settings();
+            }));
+            break;
+          case PopOutMenu.CONTACT :
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return ContactUs();
+            }));
+            break;
+          case PopOutMenu.HELP :
+            Navigator.push(context, MaterialPageRoute(builder: (context) {
+              return Help();
+            }));
+            break;
+        }
       },
       icon: Icon(Icons.more_vert),
     );
