@@ -51,6 +51,7 @@ flutter:
     - assets/images/bg3.png
     - assets/images/bg4.png
     - assets/images/placeholder_bg.png
+    - assets/images/lorempixel.jpg
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
